@@ -10,8 +10,8 @@ public class Player {
     //private long id;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @Column(name = "id", nullable = false)
     private Long id;
 
     private String name;
@@ -26,6 +26,14 @@ public class Player {
     private Date birthday;
     private Boolean banned;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public void setProfession(Profession profession) {
         this.profession = profession;
     }
@@ -34,18 +42,6 @@ public class Player {
         return profession;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

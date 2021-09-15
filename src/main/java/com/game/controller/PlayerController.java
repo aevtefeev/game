@@ -21,6 +21,7 @@ public class PlayerController {
     @Autowired
     private PlayerRepository playerRepository;
 
+    // Получаем всех игроков
     @GetMapping(path = "")
     public @ResponseBody
     ResponseEntity<List<Player>> getAllPlayers(@RequestParam(value = "pageSize",defaultValue = "0") Integer pageSize,
@@ -33,7 +34,7 @@ public class PlayerController {
     }
 
 
-
+    // Поиск игрока по id
     @GetMapping(path = "{id}")
     public @ResponseBody
     ResponseEntity<Player> getPlayerById(@PathVariable Long id){
@@ -51,11 +52,34 @@ public class PlayerController {
         }
     }
 
+    // Получаем колличество записей
     @GetMapping(path = "/count")
     public @ResponseBody
     Long getPlayersCount() {
         return  playerRepository.count();
+        // Добавить фильтрацию для корректного отображения колличества записей при фильтрации
     }
 
+    @PostMapping(path = "")
+    public ResponseEntity<?> createPlayer(@RequestBody Player player) {
+        playerRepository.save(player);
+        return  new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        if (id > 0) {
+            if (playerRepository.findById(id).isPresent()) {
+                playerRepository.deleteById(id);
+                return ResponseEntity.ok().body(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else if (id <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
