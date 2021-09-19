@@ -71,24 +71,24 @@ public class Player {
         return level;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setLevel() {
+        this.level = (int) ((Math.sqrt(2500 + (200 * this.getExperience())) - 50) /100);
     }
 
     public Integer getUntilNextLevel() {
         return untilNextLevel;
     }
 
-    public void setUntilNextLevel(Integer untilNextLevel) {
-        this.untilNextLevel = untilNextLevel;
+    public void setUntilNextLevel() {
+        this.untilNextLevel =  (50*(this.getLevel()+1)*(this.getLevel()+2)-this.getExperience());
     }
 
     public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthday(Long birthday) {
+        this.birthday = new Date(birthday);
     }
 
     public Boolean getBanned() {
@@ -105,6 +105,16 @@ public class Player {
 
     public void setRace(Race race) {
         this.race = race;
+    }
+
+    public Boolean isNull(){
+        return !(this.getName() != null
+                || this.getTitle() != null
+                || this.getRace() != null
+                || this.getProfession() != null
+                || this.getBirthday() != null
+                || this.getBanned() != null
+                || this.getExperience() !=null);
     }
 
 }

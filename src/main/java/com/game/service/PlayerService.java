@@ -10,11 +10,9 @@ import java.util.Optional;
 
 
 @Service
-//@Repository
 @Transactional
 public class PlayerService {
-   // @Qualifier("")
-   // @Autowired
+
     private final PlayerRepository playerRepository;
 
     public PlayerService(PlayerRepository playerRepository) {
@@ -25,21 +23,15 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-
-
     public Optional<Player> findById(Long id) {
         return playerRepository.findById(id);
     }
-
 
     public Player save(Player player) {
         return null;
     }
 
-
-    public void delete(Player player) {
-
-    }
+    public void delete(Player player) {    }
 
 
 
