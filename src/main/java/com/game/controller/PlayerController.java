@@ -2,9 +2,12 @@ package com.game.controller;
 
 
 import com.game.entity.Player;
+import com.game.entity.Profession;
+import com.game.entity.Race;
 import com.game.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +43,32 @@ public class PlayerController {
     // Получаем всех игроков
     @GetMapping(path = "")
     public @ResponseBody
-    ResponseEntity<List<Player>> getAllPlayers(@RequestParam(value = "pageSize",defaultValue = "0") Integer pageSize,
-                               @RequestParam(value = "pageNumber",defaultValue = "3") Integer pageNumber,
-                               @RequestParam(value = "order", defaultValue = "id") String order) {
-        PlayerOrder playerOrder = PlayerOrder.valueOf(order);
-        List<Player> result = playerRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(playerOrder.getFieldName()).ascending())).getContent();
+    ResponseEntity<List<Player>> getAllPlayers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "race", required = false) String race,
+            @RequestParam(value = "profession", required = false) String profession,
+            @RequestParam(value = "after", required = false) Long after,
+            @RequestParam(value = "before", required = false) Long before,
+            @RequestParam(value = "banned", required = false) Boolean banned,
+            @RequestParam(value = "minExperience", required = false) Integer minExperience,
+            @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
+            @RequestParam(value = "minLevel", required = false) Integer minLevel,
+            @RequestParam(value = "maxLevel", required = false) Integer maxLevel,
+            @RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize,
+            @RequestParam(value = "pageNumber",defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "order", defaultValue = "id") String order) {
+
+        Race race1 = (race != null) ?  Race.valueOf(race) : null;
+        Profession profession1 = (profession != null) ? Profession.valueOf(profession) : null;
+        Date beforeDate = (before != null) ? new Date(before) : null;
+        Date afterDate = (after != null) ? new Date(after) : null;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).ascending());
+        List<Player> result = playerRepository.findAllBy(
+                name, title, race1, profession1, afterDate, beforeDate ,banned, minExperience, maxExperience, minLevel, maxLevel,
+                pageable).getContent();
         return new ResponseEntity<>(result, HttpStatus.OK);
-        //  Добавить фильтрацию тут
     }
 
 
@@ -71,8 +93,26 @@ public class PlayerController {
     // Получаем колличество записей
     @GetMapping(path = "/count")
     public @ResponseBody
-    Long getPlayersCount() {
-        return  playerRepository.count();
+    Long getPlayersCount(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "race", required = false) String race,
+            @RequestParam(value = "profession", required = false) String profession,
+            @RequestParam(value = "after", required = false) Long after,
+            @RequestParam(value = "before", required = false) Long before,
+            @RequestParam(value = "banned", required = false) Boolean banned,
+            @RequestParam(value = "minExperience", required = false) Integer minExperience,
+            @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
+            @RequestParam(value = "minLevel", required = false) Integer minLevel,
+            @RequestParam(value = "maxLevel", required = false) Integer maxLevel
+    ) {
+        Race race1 = (race != null) ?  Race.valueOf(race) : null;
+        Profession profession1 = (profession != null) ? Profession.valueOf(profession) : null;
+        Date beforeDate = (before != null) ? new Date(before) : null;
+        Date afterDate = (after != null) ? new Date(after) : null;
+
+        return  playerRepository.count(name, title, race1, profession1, afterDate, beforeDate ,banned, minExperience,
+                maxExperience, minLevel, maxLevel);
         // Добавить фильтрацию для корректного отображения колличества записей при фильтрации
     }
 
